@@ -32,8 +32,6 @@ public class HitTracker : MonoBehaviour
         var deltaT = time - (ho.AtTime / 1000f);
         gg.GetComponent<Rigidbody2D>().velocity = new Vector2((dist/deltaT),0);
 
-        gg.tag = ho.Type == HitObjectType.Circle ? "1" : "0";
-
         GOToHitO.Add(gg,ho);
     }
 

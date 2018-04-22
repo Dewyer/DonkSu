@@ -7,6 +7,10 @@ TagManager:
   - 0
   - 1
   - Border
+  - Enemy
+  - HitO
+  - EnemyBullet
+  - Shield
   layers:
   - Default
   - TransparentFX

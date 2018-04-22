@@ -17,9 +17,9 @@ public class BoundSetter : MonoBehaviour
 		var screenSize = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width,Screen.height));
 
         Up.transform.localScale = new Vector3(screenSize.x*2,1,1);
-        Down.transform.localScale = Up.transform.localScale;
+        Down.transform.localScale = new Vector3(screenSize.x*2,0.1f,0.1f);
         Up.transform.position = new Vector3(0,screenSize.y+0.5f);
-        Down.transform.position = new Vector3(0, -screenSize.y- 0.5f);
+        Down.transform.position = new Vector3(0, -screenSize.y- 0.05f+2f);
 
         Left.transform.localScale = new Vector3(1,screenSize.y*2,1);
         Right.transform.localScale = Left.transform.localScale;

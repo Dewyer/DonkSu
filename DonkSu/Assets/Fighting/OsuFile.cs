@@ -150,7 +150,7 @@ namespace Assets.Fighting
                 var sliderMulty = int.Parse(PropertiesDictionary["SliderMultiplier"]);
                 var tt = GetTimingPointForTime(time);
                 var BeatDur = tt.MilisPerBeat;
-                UnityEngine.Debug.Log(BeatDur+" "+pxLen);
+
                 sliderLen = (int)(pxLen / (100.0f *sliderMulty) * BeatDur);
             }
 

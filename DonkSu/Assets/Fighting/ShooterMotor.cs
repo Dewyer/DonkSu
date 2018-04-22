@@ -17,12 +17,16 @@ public class ShooterMotor : MonoBehaviour
     {
         var bb = (GameObject) Instantiate(CirlcePrefab, shootFrom.transform.position, Quaternion.identity);
         bb.GetComponent<Rigidbody2D>().velocity = gameObject.transform.up * CircleSpeed;
+        var bullet = bb.GetComponent<BulletControll>();
+        bullet.Damage = 300f;
+        bullet.Pierce = true;
+
     }
 
     public void ShootSlider(int sliderLen)
     {
         var many = (sliderLen/SliderFireRate) ;
-        Debug.Log("SL:"+sliderLen);
+
         StartCoroutine(SliderShots(many));
     }
 
@@ -32,6 +36,9 @@ public class ShooterMotor : MonoBehaviour
         {
             var bb = (GameObject)Instantiate(SliderPrefab, shootFrom.transform.position, Quaternion.identity);
             bb.GetComponent<Rigidbody2D>().velocity = gameObject.transform.up * SliderSpeed;
+            var bullet = bb.GetComponent<BulletControll>();
+            bullet.Damage = 200f;
+            bullet.Pierce = false;
 
             yield return new WaitForSeconds(SliderFireRate/1000f);
         }

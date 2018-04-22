@@ -15,6 +15,7 @@ public class Controller : MonoBehaviour
     public HitTracker HitTracker;
 
     public ShooterMotor Shooter;
+    public GameObject BasicEnemy;
 
     public AudioClip clip;
     private OsuFile osuMap;
@@ -48,22 +49,117 @@ public class Controller : MonoBehaviour
             var ht = osuMap.GetNextHitObject();
 
             HitTracker.StartNewHit(ht,source.time);
+
+            StartCoroutine(StartEnemySpawn());
         }
+    }
+
+    private IEnumerator StartEnemySpawn()
+    {
+        yield return new WaitForSeconds(0.8f);
+        SpawnNewEnemy();
+    }
+
+    private void SpawnNewEnemy()
+    {
+        if (Random.Range(0,100) <= 60)
+            return;
+
+        var type = Random.Range(0, 100);
+        var gg = SpawnEnemyToRandomLocation();
+        var ec = gg.GetComponent<EnemyControll>();
+
+        if (type <= 20)
+        {
+            //DOG
+            ec.ThisEnemyType = EnemyControll.EnemyType.Dog;
+
+        }
+        else if (type <= 80)
+        {
+            //robot
+            ec.ThisEnemyType = EnemyControll.EnemyType.Robot;
+        }
+        else
+        {
+            //Shield
+            ec.ThisEnemyType = EnemyControll.EnemyType.Shield;
+            ec.Shield.SetActive(true);
+
+        }
+        SetEnemyLooks(gg, ec);
+    }
+
+    private void SetEnemyLooks(GameObject gg, EnemyControll ec)
+    {
+        if (ec.ThisEnemyType == EnemyControll.EnemyType.Dog)
+        {
+            gg.GetComponent<SpriteRenderer>().color = new Color(0.4f,0.2f,0.3f,1f);
+        }
+        else if (ec.ThisEnemyType == EnemyControll.EnemyType.Shield)
+        {
+            gg.GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.3f, 0.3f, 1f);
+
+        }
+    }
+
+    public GameObject SpawnEnemyToRandomLocation()
+    {
+        var screenSize = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+        var pos = Random.Range(0.1f, 0.9f);
+        var realPos = new Vector3(0,0,0);
+        var side = Random.Range(0, 4);
+        var spacing = 1f;
+
+        if (side == 0)
+        {
+            //UP
+            realPos = new Vector3(pos*screenSize.x,screenSize.y+ spacing, 0);
+        }
+        else if (side == 1)
+        {
+            //DOWN
+            realPos = new Vector3(pos * screenSize.x, -screenSize.y - spacing, 0);
+        }
+        else if (side == 2)
+        {
+            //Left
+            realPos = new Vector3(-screenSize.x-spacing,screenSize.y*pos, 0);
+
+        }
+        else
+        {
+            //Right
+            realPos = new Vector3(screenSize.x + spacing, screenSize.y * pos, 0);
+
+        }
+
+        var gg = (GameObject) Instantiate(BasicEnemy, realPos, Quaternion.identity);
+
+        return gg;
     }
 
     private void TryFire()
     {
         if (HitTracker.HitTrackerEnd.ObjectsIn.Count > 0)
         {
-            var hot = HitTracker.GOToHitO[HitTracker.HitTrackerEnd.ObjectsIn[0]];
+            var ga = HitTracker.HitTrackerEnd.ObjectsIn[0];
+            if (HitTracker.GOToHitO.ContainsKey(ga))
+            {
+                var hot = HitTracker.GOToHitO[ga];
 
-            if (hot.Type == HitObjectType.Circle)
-            {
-                Shooter.ShootCirlce();
-            }
-            else if (hot.Type == HitObjectType.Slider)
-            {
-                Shooter.ShootSlider(hot.Length);
+                if (hot.Type == HitObjectType.Circle)
+                {
+                    Shooter.ShootCirlce();
+                }
+                else if (hot.Type == HitObjectType.Slider)
+                {
+                    Shooter.ShootSlider(hot.Length);
+                }
+
+                HitTracker.HitTrackerEnd.ObjectsIn.RemoveAt(0);
+                HitTracker.GOToHitO.Remove(ga);
+                Destroy(ga);
             }
         }
     }
@@ -78,8 +174,7 @@ public class Controller : MonoBehaviour
 
             StartNewHits();
 
-            var down = Input.GetMouseButtonDown(0);
-            Debug.Log(down);
+            var down = Input.GetKeyDown(KeyCode.Space);
             if (down)
             {
                 TryFire();

@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212462687537958542}
   - component: {fileID: 61896185849477060}
   - component: {fileID: 50677920687321434}
+  - component: {fileID: 114600184259550538}
   m_Layer: 0
   m_Name: CircleBullet
   m_TagString: Untagged
@@ -87,6 +88,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &114600184259550538
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1874801528435144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b448abb1c75be4648989d4f5d519657c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212462687537958542
 SpriteRenderer:
   m_ObjectHideFlags: 1

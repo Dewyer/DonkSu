@@ -35,7 +35,7 @@ public class HitTrackerEnd : MonoBehaviour
 
     public void OnTriggerExit2D(Collider2D other)
     {
-        if (ObjectsIn.IndexOf(other.gameObject) != -1)
+        if (ObjectsIn.IndexOf(other.gameObject) != -1 && other.gameObject.tag == "HitO")
         {
             ObjectsIn.Remove(other.gameObject);
 
