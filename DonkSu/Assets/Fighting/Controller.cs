@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Assets.Fighting;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Controller : MonoBehaviour
 {
@@ -16,6 +19,14 @@ public class Controller : MonoBehaviour
 
     public ShooterMotor Shooter;
     public GameObject BasicEnemy;
+    public Sprite ShildedSprite;
+    public Sprite RobotSprite;
+
+    public int Combo;
+    public int Coins;
+    public Text SongName;
+    public Text ScoreText;
+    public Text Progress;
 
     public AudioClip clip;
     private OsuFile osuMap;
@@ -25,6 +36,9 @@ public class Controller : MonoBehaviour
 	void Start ()
 	{
         StartMap();
+        UpdateScores();
+
+	    SongName.text = MapName;
 	}
 
     public void StartMap()
@@ -40,6 +54,38 @@ public class Controller : MonoBehaviour
         source.clip = clip;
         source.Play();
 
+        Coins = 0;
+        Combo = 1;
+
+        StartCoroutine(ProgressTimer());
+
+    }
+
+    private List<string> SecondsToMinutesSeconds(float seconds)
+    {
+        var ss = (int) seconds;
+        var secs = ss % 60;
+        var minutes = (ss - secs) / 60;
+        var secsS = secs.ToString();
+        if (secs < 10)
+        {
+            secsS = "0" + secs.ToString();
+        }
+
+        return new List<string>(){minutes.ToString(),secsS};
+    }
+
+    private IEnumerator ProgressTimer()
+    {
+
+        var endM = SecondsToMinutesSeconds(source.clip.length);
+        while (source.isPlaying)
+        {
+            var dt = SecondsToMinutesSeconds(source.time);
+
+            Progress.text = String.Format("{0}:{1}/{2}:{3}", dt[0], dt[1], endM[0], endM[1]);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     public void StartNewHits()
@@ -60,6 +106,19 @@ public class Controller : MonoBehaviour
         SpawnNewEnemy();
     }
 
+    private void UpdateScores()
+    {
+        ScoreText.text = String.Format("{0} x{1}",Coins,Combo);
+    }
+
+    private void Killed(EnemyControll.EnemyType type)
+    {
+        var baseCoins = new Dictionary<EnemyControll.EnemyType,int>() {{ EnemyControll.EnemyType.Robot, 2 },{ EnemyControll.EnemyType.Shield, 5 },{ EnemyControll.EnemyType.Dog, 1 } };
+
+        Coins += baseCoins[type] * Combo;
+        UpdateScores();
+    }
+
     private void SpawnNewEnemy()
     {
         if (Random.Range(0,100) <= 60)
@@ -73,6 +132,7 @@ public class Controller : MonoBehaviour
         {
             //DOG
             ec.ThisEnemyType = EnemyControll.EnemyType.Dog;
+            ec.Biter.SetActive(true);
 
         }
         else if (type <= 80)
@@ -92,14 +152,19 @@ public class Controller : MonoBehaviour
 
     private void SetEnemyLooks(GameObject gg, EnemyControll ec)
     {
+        //gg.GetComponent<Animator>().enabled = false;
+        gg.GetComponent<SpriteRenderer>().sprite = RobotSprite;
+
+
         if (ec.ThisEnemyType == EnemyControll.EnemyType.Dog)
         {
-            gg.GetComponent<SpriteRenderer>().color = new Color(0.4f,0.2f,0.3f,1f);
+            gg.GetComponent<Animator>().enabled = true;
+            gg.GetComponent<Animator>().SetBool("DogWalk",true);
+
         }
         else if (ec.ThisEnemyType == EnemyControll.EnemyType.Shield)
         {
-            gg.GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.3f, 0.3f, 1f);
-
+            gg.GetComponent<SpriteRenderer>().sprite = ShildedSprite;
         }
     }
 
@@ -108,18 +173,13 @@ public class Controller : MonoBehaviour
         var screenSize = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
         var pos = Random.Range(0.1f, 0.9f);
         var realPos = new Vector3(0,0,0);
-        var side = Random.Range(0, 4);
+        var side = Random.Range(0, 3);
         var spacing = 1f;
 
         if (side == 0)
         {
             //UP
             realPos = new Vector3(pos*screenSize.x,screenSize.y+ spacing, 0);
-        }
-        else if (side == 1)
-        {
-            //DOWN
-            realPos = new Vector3(pos * screenSize.x, -screenSize.y - spacing, 0);
         }
         else if (side == 2)
         {
@@ -144,6 +204,8 @@ public class Controller : MonoBehaviour
         if (HitTracker.HitTrackerEnd.ObjectsIn.Count > 0)
         {
             var ga = HitTracker.HitTrackerEnd.ObjectsIn[0];
+            HitTracker.OnHit();
+
             if (HitTracker.GOToHitO.ContainsKey(ga))
             {
                 var hot = HitTracker.GOToHitO[ga];
@@ -161,7 +223,15 @@ public class Controller : MonoBehaviour
                 HitTracker.GOToHitO.Remove(ga);
                 Destroy(ga);
             }
+
+            Combo++;
         }
+        else
+        {
+            Combo = 1;
+        }
+
+        UpdateScores();
     }
 
 

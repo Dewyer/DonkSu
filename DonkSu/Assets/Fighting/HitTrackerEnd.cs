@@ -17,7 +17,7 @@ public class HitTrackerEnd : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (ObjectsIn.IndexOf(other.gameObject) == -1)
+        if (ObjectsIn.IndexOf(other.gameObject) == -1 && other.gameObject.tag == "HitO")
         {
             ObjectsIn.Add(other.gameObject);
         }
@@ -26,7 +26,7 @@ public class HitTrackerEnd : MonoBehaviour
 
     public void OnTriggerStay2D(Collider2D other)
     {
-        if (ObjectsIn.IndexOf(other.gameObject) == -1)
+        if (ObjectsIn.IndexOf(other.gameObject) == -1 && other.gameObject.tag == "HitO")
         {
             ObjectsIn.Add(other.gameObject);
         }

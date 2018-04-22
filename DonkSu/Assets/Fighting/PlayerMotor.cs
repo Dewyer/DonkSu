@@ -7,14 +7,25 @@ public class PlayerMotor : MonoBehaviour
 
     private Rigidbody2D rgb;
 
+    private Animator Animator;
+
     //Pubs
     public float PlayerSpeed;
+    private bool _walking;
 
+    public bool Walking {
+        get { return _walking; }
+        set
+        {
+            _walking = value;
+            Animator.SetBool("Walking",_walking);
+        }
+    }
 
-	void Start ()
+    void Start ()
 	{
 	    rgb = gameObject.GetComponent<Rigidbody2D>();
-
+	    Animator = gameObject.GetComponent<Animator>();
 	}
 	
 	void Update ()
@@ -24,6 +35,15 @@ public class PlayerMotor : MonoBehaviour
 
 	    var playerVelocity = new Vector2(horizontal*PlayerSpeed,vertical*PlayerSpeed);
 	    rgb.velocity = playerVelocity;
+
+	    if (rgb.velocity.magnitude != 0)
+	    {
+	        Walking = true;
+	    }
+	    else
+	    {
+	        Walking = false;
+	    }
 
 	    var mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 	    Vector3 diff = mouse - transform.position;

@@ -11,6 +11,7 @@ public class BoundSetter : MonoBehaviour
     public Collider2D Left;
     public Collider2D Right;
 
+    public GameObject Separator;
 
     void Start ()
     {
@@ -20,6 +21,7 @@ public class BoundSetter : MonoBehaviour
         Down.transform.localScale = new Vector3(screenSize.x*2,0.1f,0.1f);
         Up.transform.position = new Vector3(0,screenSize.y+0.5f);
         Down.transform.position = new Vector3(0, -screenSize.y- 0.05f+2f);
+        Separator.transform.position = Down.transform.position;
 
         Left.transform.localScale = new Vector3(1,screenSize.y*2,1);
         Right.transform.localScale = Left.transform.localScale;

@@ -14,6 +14,7 @@ public class EnemyControll : MonoBehaviour
     public EnemyType ThisEnemyType;
 
     public GameObject Shield;
+    public GameObject Biter;
 
     public GameObject BulletPrefab;
     public GameObject ShootFrom;
@@ -43,7 +44,8 @@ public class EnemyControll : MonoBehaviour
             var bullet = bb.GetComponent<BulletControll>();
             bullet.Pierce = false;
             bullet.Damage = BulletDmg;
-
+            var rot = gameObject.transform.rotation.eulerAngles;
+            bb.transform.rotation = Quaternion.Euler(0,0,rot.z-90);
             bb.tag = "EnemyBullet";
         }
     }
@@ -67,7 +69,19 @@ public class EnemyControll : MonoBehaviour
         if (HP == 0f)
         {
             //DEAD
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            GameObject.FindGameObjectWithTag("Controller").SendMessage("Killed",ThisEnemyType);
+            StartCoroutine(DestroyMe());
         }
+    }
+
+    private IEnumerator DestroyMe()
+    {
+        gameObject.GetComponent<EnemyMotor>().Dead = true;
+        gameObject.GetComponent<Animator>().enabled = true;
+        gameObject.GetComponent<Animator>().SetBool("Dead",true);
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(1.0f);
+        Destroy(gameObject);
     }
 }

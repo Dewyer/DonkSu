@@ -11,6 +11,7 @@ TagManager:
   - HitO
   - EnemyBullet
   - Shield
+  - Controller
   layers:
   - Default
   - TransparentFX
