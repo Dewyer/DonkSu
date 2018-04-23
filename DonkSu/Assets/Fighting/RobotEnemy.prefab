@@ -266,7 +266,7 @@ MonoBehaviour:
     type: 2}
   ShootFrom: {fileID: 1826231790009738}
   BulletDmg: 30
-  FireRate: 0.4
+  FireRate: 1
   BulletSpeed: 10
 --- !u!114 &114221350549081250
 MonoBehaviour:

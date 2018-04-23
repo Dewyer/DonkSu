@@ -64,7 +64,7 @@ public class PlayerControll : MonoBehaviour
         {
             //DEAD
             Debug.Log("Dead!");
-
+            GameObject.FindGameObjectWithTag("Controller").gameObject.GetComponent<Controller>().GameEnded();
         }
     }
 }

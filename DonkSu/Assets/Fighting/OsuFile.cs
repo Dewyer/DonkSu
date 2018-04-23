@@ -34,6 +34,8 @@ namespace Assets.Fighting
     class OsuFile
     {
         public string FileContents;
+        public string Path;
+
         public Dictionary<string, string> PropertiesDictionary;
 
         public List<HitObject> HitObjects;
@@ -41,6 +43,7 @@ namespace Assets.Fighting
 
         public OsuFile(string path)
         {
+            Path = path;
             FileContents = File.ReadAllText(path);
 
             LoadProps();
@@ -146,12 +149,21 @@ namespace Assets.Fighting
             if (realType == HitObjectType.Slider)
             {
                 //slider duration = pixelLength / (100.0 * SliderMultiplier) * BeatDuration
-                var pxLen = int.Parse(tokens[7]);
-                var sliderMulty = int.Parse(PropertiesDictionary["SliderMultiplier"]);
-                var tt = GetTimingPointForTime(time);
-                var BeatDur = tt.MilisPerBeat;
+                try
+                {
+                    var pxLen = float.Parse(tokens[7]);
+                    var sliderMulty = float.Parse(PropertiesDictionary["SliderMultiplier"]);
+                    var tt = GetTimingPointForTime(time);
+                    var BeatDur = tt.MilisPerBeat;
 
-                sliderLen = (int)(pxLen / (100.0f *sliderMulty) * BeatDur);
+                    sliderLen = (int)(pxLen / (100.0f *sliderMulty) * BeatDur);
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.Log(Path);
+                    UnityEngine.Debug.Log(line);
+                    throw;
+                }
             }
 
             var ho = new HitObject() { X = x, Y = y, AtTime = time, Type = realType,AproachTime = time-(int)timeFade,Length = sliderLen};

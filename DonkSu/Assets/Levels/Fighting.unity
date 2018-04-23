@@ -432,11 +432,16 @@ MonoBehaviour:
   ShildedSprite: {fileID: 21300000, guid: dfa34940c59f57142b7773a343d6d1a5, type: 3}
   RobotSprite: {fileID: 21300000, guid: bdfd493d8ef7f32408f8f4bbad33a871, type: 3}
   Combo: 0
+  MaxCombo: 0
   Coins: 0
   SongName: {fileID: 1078870741}
   ScoreText: {fileID: 983366016}
   Progress: {fileID: 1793907273}
+  RealLen: 0
   clip: {fileID: 0}
+  Crosshair: {fileID: 2800000, guid: 9f09c0a928a5c934dad93a3b9bdd01cc, type: 3}
+  cursorMode: 0
+  hotSpot: {x: 0, y: 0}
   MapIsGoing: 0
 --- !u!114 &528902913
 MonoBehaviour:
@@ -502,7 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -659,7 +664,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -9, y: 29.5}
+  m_AnchoredPosition: {x: -5, y: 20}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &983366015
@@ -697,7 +702,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 98d8de903f1ff6a41a8f2158ec1fe5ea, type: 3}
-    m_FontSize: 25
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1014,7 +1019,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 98d8de903f1ff6a41a8f2158ec1fe5ea, type: 3}
-    m_FontSize: 15
+    m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1774,10 +1779,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 98d8de903f1ff6a41a8f2158ec1fe5ea, type: 3}
-    m_FontSize: 14
+    m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0

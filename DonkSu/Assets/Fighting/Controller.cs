@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Assets.Fighting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -23,32 +25,45 @@ public class Controller : MonoBehaviour
     public Sprite RobotSprite;
 
     public int Combo;
+    public int MaxCombo;
+
     public int Coins;
     public Text SongName;
     public Text ScoreText;
     public Text Progress;
 
+    public float RealLen;
+
     public AudioClip clip;
     private OsuFile osuMap;
+
+    public Texture2D Crosshair;
+    public CursorMode cursorMode = CursorMode.Auto;
+    public Vector2 hotSpot = Vector2.zero;
 
     public bool MapIsGoing;
 
 	void Start ()
 	{
+        MapName = PlayerPrefs.GetString("mapname");
+        LevelName = PlayerPrefs.GetString("lvlname");
         StartMap();
         UpdateScores();
+	    var pa = Path.GetFileName(MapName).Split('.')[0];
 
-	    SongName.text = MapName;
-	}
+        SongName.text = pa;
+	    Cursor.SetCursor(Crosshair, hotSpot, cursorMode);
+
+    }
 
     public void StartMap()
     {
+
         MapIsGoing = true;
 
-        basePath = "/" + LevelName + "/";
-        osuMap = new OsuFile("Assets/Resources" + basePath+MapName+".osu");
+        osuMap = new OsuFile(MapName);
 
-        var bites = File.ReadAllBytes("Assets/Resources" + basePath + osuMap.PropertiesDictionary["AudioFilename"]);
+        var bites = File.ReadAllBytes(LevelName+"/" + osuMap.PropertiesDictionary["AudioFilename"]);
 
         clip = NAudioPlayer.FromMp3Data(bites);
         source.clip = clip;
@@ -56,7 +71,9 @@ public class Controller : MonoBehaviour
 
         Coins = 0;
         Combo = 1;
+        MaxCombo = Combo;
 
+        RealLen = osuMap.HitObjects.Last().AtTime / 1000f + 5f;
         StartCoroutine(ProgressTimer());
 
     }
@@ -78,14 +95,34 @@ public class Controller : MonoBehaviour
     private IEnumerator ProgressTimer()
     {
 
-        var endM = SecondsToMinutesSeconds(source.clip.length);
+        var endM = SecondsToMinutesSeconds(RealLen);
         while (source.isPlaying)
         {
             var dt = SecondsToMinutesSeconds(source.time);
 
             Progress.text = String.Format("{0}:{1}/{2}:{3}", dt[0], dt[1], endM[0], endM[1]);
+
+            if (RealLen <= source.time)
+            {
+                //END
+                GameEnded();
+            }
+
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void GameEnded()
+    {
+        var player = Shooter.gameObject.GetComponent<PlayerControll>();
+
+        PlayerPrefs.SetInt("won",player.HP==0? 0:1);
+        PlayerPrefs.SetInt("coinsCollected",Coins);
+        PlayerPrefs.SetInt("maxCombo",MaxCombo);
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene("GameOver");
+
     }
 
     public void StartNewHits()
@@ -231,6 +268,11 @@ public class Controller : MonoBehaviour
             Combo = 1;
         }
 
+        if (Combo >= MaxCombo)
+        {
+            MaxCombo = Combo;
+
+        }
         UpdateScores();
     }
 
